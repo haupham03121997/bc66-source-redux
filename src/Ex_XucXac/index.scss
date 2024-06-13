@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "fontGame";
+  src: url("./fontGame.ttf");
+}
+
+.ex-game {
+  padding-top: 100px;
+  // font
+  font-family: "fontGame";
+  background: url("https://baitap-react-redux-gamexucxac.vercel.app/static/media/bgGame.e49605597dae0136a330.png");
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  .btn {
+    padding: 10px 30px;
+    font-size: 40px;
+    margin-top: 30px;
+  }
+  img {
+    margin: 0 20px;
+  }
+}
