@@ -1,3 +1,5 @@
+import { TYPE_SELECTED } from '../actions';
+
 const initialState = {
   list: [
     {
@@ -188,11 +190,43 @@ const initialState = {
       ],
     },
   ],
-  bookingList: [{ soGhe: "A1" , gia : 200},{ soGhe: "A2" , gia : 200},{ soGhe: "A3" , gia : 200}]
+  bookingList: [],
 };
 
 export const movieReducer = (state = initialState, action) => {
-  switch (action.type) {
+  const { type, payload } = action;
+  switch (type) {
+    case TYPE_SELECTED: {
+     const newList =  [...state.list].map((item) => {
+        // Tim hang ghe
+        if (item.hang === payload.hang) {
+          const newDanhSachGhe = item.danhSachGhe.map((ghe) => {
+            // Tim so ghe trong hang
+            if(ghe.soGhe === payload.soGhe){
+              // Nếu số ghế bằng với số ghế user chọn thì thêm thuộc tính dangChon là true và return về newGhe
+              const newGhe =  {...ghe , dangChon: true}
+              return newGhe
+            }
+            // Ngược lại return về ghe
+            return ghe
+          });
+          return {...item,danhSachGhe: newDanhSachGhe }
+        }
+        return item; // { hang: "A" , danhSachGhe: []}
+      });
+
+      const newBookingList = [...state.bookingList];
+      const isExits = newBookingList.find((item)=>{
+        return item.hang === payload.hang && item.soGhe === payload.soGhe
+      });
+
+      if(!isExits){
+        // Nếu không có trong bookingList thi mình push nó vào newBookingList
+        newBookingList.push(payload)
+      }
+
+      return { ...state, list: newList, bookingList: newBookingList };
+    }
     default:
       return { ...state };
   }

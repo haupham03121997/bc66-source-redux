@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './styles.css';
+import { TYPE_SELECTED } from './actions';
 
 class Booking extends Component {
   render() {
     console.log('props', this.props);
-    const { list, bookingList } = this.props;
+    const { list, bookingList, onSelected } = this.props;
     return (
       <div className="container mt-5">
         <h1>Book vé xem phim</h1>
@@ -20,12 +21,19 @@ class Booking extends Component {
                 return (
                   <div className="chair-row" key={`list-danh-sach-ghe=${index}`}>
                     <div className="type">{first ? '' : item.hang}</div>
-                    {danhSachGhe.map((item, index) => (
+                    {danhSachGhe.map((ghe, index) => (
                       <div
                         key={`danh-sach-ghe=${index}`}
-                        className={`ghe ${item.daDat ? 'gheDuocChon' : ''} ${item.dangChon ? 'gheDangChon' : ''}`}
+                        className={`ghe ${ghe.daDat ? 'gheDuocChon' : ''} ${ghe.dangChon ? 'gheDangChon' : ''}`}
+                        onClick={() => {
+                          if (ghe.daDat || ghe.dangChon) {
+                            return;
+                          }
+                          const data = { hang: item.hang, ...ghe };
+                          onSelected(data);
+                        }}
                       >
-                        {item.soGhe}
+                        {ghe.soGhe}
                       </div>
                     ))}
                   </div>
@@ -70,6 +78,12 @@ class Booking extends Component {
                 })}
               </tbody>
             </table>
+
+            {bookingList.length && (
+              <div style={{ textAlign: 'end' }}>
+                <button className="btn btn-success">Thanh toán</button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -84,6 +98,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSelected: (data) => {
+      console.log('onSelected data', data);
+      dispatch({ type: TYPE_SELECTED, payload: data });
+    },
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Booking);
